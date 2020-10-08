@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <style>
+            body {margin : 0; padding: 0;}
+            canvas {display : block;}
+        </style>
+        <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-database.js"></script>
+        <script>
+            let firebaseConfig = {
+                apiKey: "AIzaSyA--0Gj5GcRKDZpdKgHF1UABteFkZou5Zo",
+                authDomain: "rapid-calculation.firebaseapp.com",
+                databaseURL: "https://rapid-calculation.firebaseio.com",
+                projectId: "rapid-calculation",
+                storageBucket: "rapid-calculation.appspot.com",
+                messagingSenderId: "744019959911",
+                appId: "1:744019959911:web:7df313dc763989568474c2"
+            };
+            firebase.initializeApp(firebaseConfig);
+        </script>
+        <script src="Libraries/p5.min.js"></script>
+        <script src="Libraries/p5.dom.min.js"></script>
+        <script src="Libraries/p5.sound.min.js"></script>
+        <script src="Blueprints/form.js"></script>
+    </head>
+    <body>
+        <script src="sketch.js"></script>
+    </body>
+</html>
