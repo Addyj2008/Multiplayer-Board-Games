@@ -62,19 +62,28 @@ class Form {
         this.usernameTaken = createElement('h5');
         this.usernameTaken.position(100, 400);
         this.usernameTaken.html('This Username is already taken');
+        this.usernameSize = createElement('h5');
+        this.usernameSize.position(100, 400);
+        this.usernameSize.html('Username Must be between 3 to 21 Characters Long');
         this.checkUsername = createButton('Next');
         this.checkUsername.position(100, 300);
         this.checkUsername.mousePressed(()=>{
-            database.ref('Players').once('value').then((val)=>{
-                if (checkUsername(val.val(), this.enterUsername.value())) {
-                    this.hideAll()
-                    this.enterPassword.show();
-                    this.create.show();;
-                    this.back.show();
-                } else {
-                    this.usernameTaken.show();
-                }
-            });
+            if (this.enterUsername.value().length <= 3 || this.enterUsername.value().length >= 21) {
+                this.usernameTaken.hide();
+                this.usernameSize.show();
+            } else {
+                database.ref('Players').once('value').then((val)=>{
+                    if (checkUsername(val.val(), this.enterUsername.value())) {
+                        this.hideAll()
+                        this.enterPassword.show();
+                        this.create.show();;
+                        this.back.show();
+                    } else {
+                        this.usernameTaken.show();
+                        this.usernameSize.hide();
+                    }
+                });
+            }
         });
         this.signOut = createButton('Sign Out');
         this.signOut.position(100, 100);
@@ -162,6 +171,7 @@ class Form {
         this.delete.show();
         this.changePassword.show();
         this.changeUsername.show();
+        this.leaderBoards.show();
         database.ref('Players/' + name + '/Score').off();
         name = this.enterUsername.value();
         database.ref('Players/' + name + '/Score').once('value').then(function (data) {
@@ -196,21 +206,47 @@ class Form {
         this.checkUsername.hide();
         this.backHome.hide();
         this.leaderBoards.hide();
+        this.usernameSize.hide();
     }
     leaderBoardsF(type) {
-        let LS = [];
+        this.hideAll();
+        topper = [];
+        let ls = [];
         database.ref('Players').once('value').then((val)=>{
             for (let loop1 in val.val()) {
-                LS.push({
-                    'name' : loop1,
-                    'score' : loop1.Score[type]
+                database.ref('Players/' + loop1 + '/Score/' + type).once('value').then((val2)=>{
+                    ls.push({
+                        'name' : loop1,
+                        'score' : val2
+                    });
                 });
             }
         });
-        let tops = [];
-        for (let loop1 in LS) {
-            
+        for (let loop0 = 0; loop0 < 10; loop0++) {
+            let highestScore;
+            for (let loop1 = 0; loop1 < ls.length; loop1++) {
+                if (highestScore !== undefined && highestScore !== null) {
+                    if (ls[loop1].score > highestScore.score) {
+                        let check = true;
+                        for (loop2 = 0; loop2 < topper.length; loop2++) {
+                            if (topper[loop2].name === ls[loop1].name) {
+                                check = false;
+                            }
+                        }
+                        if (check) {
+                            highestScore = ls[loop1];
+                        }
+                    }
+                } else {
+                    highestScore = ls[loop1]; 
+                }
+            }
+            if (highestScore !== undefined && highestScore !== null) {
+                topper.push[highestScore];
+            }
         }
+        state = "LeaderBoards";
+        this.backHome.show();
     }
 }
 
