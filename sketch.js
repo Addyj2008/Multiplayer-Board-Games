@@ -26,5 +26,31 @@ function draw() {
                 oldName = null;
             }
         });
-    } 
+    }
+    if (wait[1] && form.ls.length > 0) {
+        for (let loop0 = 0; loop0 < 10 && loop0 < form.ls.length; loop0++) {
+            let highestScore;
+            for (let loop1 = 0; loop1 < form.ls.length; loop1++) {
+                if (highestScore !== undefined && highestScore !== null) {
+                    if (form.ls[loop1].score >= highestScore.score) {
+                        let check = true;
+                        for (loop2 = 0; loop2 < topper.length; loop2++) {
+                            if (topper[loop2].name === form.ls[loop1].name) {
+                                check = false;
+                            }
+                        }
+                        if (check) {
+                            highestScore = form.ls[loop1];
+                        }
+                    }
+                } else {
+                    highestScore = form.ls[loop1]; 
+                }
+            }
+            if (highestScore !== undefined && highestScore !== null) {
+                topper.push(highestScore);
+            }
+        }
+        wait[1] = false;
+    }
 }

@@ -1,5 +1,7 @@
 class Form {
     constructor () {
+        this.currentGame = "";
+        this.ls = [];
         this.signUp = createButton('Sign Up');
         this.signUp.position(100, 100);
         this.signUp.mousePressed(()=>{
@@ -152,10 +154,23 @@ class Form {
         this.leaderBoards = createButton('Leader Boards');
         this.leaderBoards.position(100, 400);
         this.leaderBoards.mousePressed(()=>{this.leaderBoardsF('Total')});
+        this.play = createButton('Play');
+        this.play.position(100, 300);
+        this.play.mousePressed(()=>{this.playF()});
+        this.games = [
+            {
+                'name' : "Othello",
+                'button' : createButton("Othello"),
+            }
+        ]
+        for (let loop1 = 0; loop1 < this.games.length; loop1++) {
+            this.games[loop1].button.position(loop1 % 5 * 100 + 100, (loop1 - loop1 % 5)/5 * 100 + 200);
+            this.games[loop1].button.mousePressed(()=>{this.gameScreen(this.games[loop1].name)});
+        }
         this.signUpPage();
     }
     signUpPage() {
-        this.hideAll()
+        this.hideAll();
         this.signUp.show();
         this.signIn.show();
         if (name === null || name === undefined) {
@@ -166,7 +181,8 @@ class Form {
         state = "Sign Up";
     }
     homePage() {
-        this.hideAll()
+        this.hideAll();
+        this.play.show();
         this.signOut.show();
         this.delete.show();
         this.changePassword.show();
@@ -184,69 +200,53 @@ class Form {
     }
     hideAll() {
         state = null;
-        this.signOut.hide();
-        this.delete.hide()
-        this.signUp.hide();
-        this.signIn.hide();
-        this.back.hide();
-        this.enterPassword.hide();
-        this.enterUsername.hide();
-        this.incorrect.hide();
-        this.enter.hide()
-        this.create.hide();
-        this.checkUsername.hide();
-        this.usernameTaken.hide();
-        this.deleteSure.hide()
-        this.deleteYes.hide();
-        this.deleteNo.hide();
-        this.changePassword.hide();
-        this.changeUsername.hide();
-        this.confirmPassword.hide();
-        this.confirmUsername.hide();
-        this.checkUsername.hide();
-        this.backHome.hide();
-        this.leaderBoards.hide();
-        this.usernameSize.hide();
+        for (let loop1 in this) {
+            if (this[loop1].hide !== undefined && this[loop1].hide !== null) {
+                this[loop1].hide();
+            }
+        }
+        for (let loop1 in this.games) {
+            this.games[loop1].button.hide();
+        }
     }
     leaderBoardsF(type) {
         this.hideAll();
         topper = [];
-        let ls = [];
+        this.ls = [];
         database.ref('Players').once('value').then((val)=>{
             for (let loop1 in val.val()) {
-                database.ref('Players/' + loop1 + '/Score/' + type).once('value').then((val2)=>{
-                    ls.push({
-                        'name' : loop1,
-                        'score' : val2
-                    });
+                this.ls.push({
+                    'name' : loop1,
+                    'score' : val.val()[loop1].Score[type]
                 });
             }
         });
-        for (let loop0 = 0; loop0 < 10; loop0++) {
-            let highestScore;
-            for (let loop1 = 0; loop1 < ls.length; loop1++) {
-                if (highestScore !== undefined && highestScore !== null) {
-                    if (ls[loop1].score > highestScore.score) {
-                        let check = true;
-                        for (loop2 = 0; loop2 < topper.length; loop2++) {
-                            if (topper[loop2].name === ls[loop1].name) {
-                                check = false;
-                            }
-                        }
-                        if (check) {
-                            highestScore = ls[loop1];
-                        }
-                    }
-                } else {
-                    highestScore = ls[loop1]; 
-                }
-            }
-            if (highestScore !== undefined && highestScore !== null) {
-                topper.push[highestScore];
-            }
-        }
+        wait[1] = true;
         state = "LeaderBoards";
         this.backHome.show();
+    }
+    playF() {
+        this.hideAll();
+        this.backHome.show();
+        for (let loop1 in this.games) {
+            this.games[loop1].button.show();
+        }
+        state = "Play";
+    }
+    gameScreen(game) {
+        this.hideAll();
+        this.backHome.show();
+        this.currentGame = game;
+        database.ref('Players/' + name + '/Score').once('value').then((val)=>{
+            if (val.val()[this.currentGame] === undefined || val.val()[this.currentGame] === null) {
+                database.ref('Players/' + name + '/Score').once('value').then((val2)=>{
+                    let tempVal = val2.val();
+                    tempVal[this.currentGame] = 0
+                    database.ref('Players/' + name).update({'Score' : tempVal});
+                });
+            }
+        });
+        state = 'Game Screen';
     }
 }
 
