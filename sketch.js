@@ -10,6 +10,8 @@ function draw() {
     background(255, 255, 255);
     if (state === "Home" && score !== undefined && score !== null) {
         text("Score = " + score.Total, 100, 200);
+    } else if (state === "Game Screen" && score !== undefined && score !== null) {
+        text("Score = " + score[form.currentGame], 100, 200);   
     }
     if (state === "LeaderBoards") {
         for (loop1 = 0; loop1 < topper.length; loop1++) {

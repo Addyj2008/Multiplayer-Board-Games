@@ -1,6 +1,7 @@
 class Form {
     constructor () {
         this.currentGame = "";
+        this.currentGameName = "";
         this.ls = [];
         this.signUp = createButton('Sign Up');
         this.signUp.position(100, 100);
@@ -25,6 +26,9 @@ class Form {
         this.backHome = createButton('Back');
         this.backHome.position(100, 100);
         this.backHome.mousePressed(()=>{this.homePage();});
+        this.backPlay = createButton('Back');
+        this.backPlay.position(100, 100);
+        this.backPlay.mousePressed(()=>{this.gameScreen(this.currentGame);});
         this.enterUsername = createInput('Username');
         this.enterUsername.position(100, 200);
         this.enterPassword = createInput('Password');
@@ -153,14 +157,102 @@ class Form {
         });
         this.leaderBoards = createButton('Leader Boards');
         this.leaderBoards.position(100, 400);
-        this.leaderBoards.mousePressed(()=>{this.leaderBoardsF('Total')});
+        this.leaderBoards.mousePressed(()=>{
+            this.hideAll();
+            this.leaderBoardsF('Total');
+            this.backHome.show();
+        });
         this.play = createButton('Play');
         this.play.position(100, 300);
         this.play.mousePressed(()=>{this.playF()});
+        this.rulesText = createElement('h6');
+        this.rulesText.position(100, 200);
+        this.rules = createButton('Rules');
+        this.rules.position(100, 300);
+        this.rules.mousePressed(() => {
+            this.hideAll();
+            this.backPlay.show();
+            this.rulesText.show();
+            for (let loop in this.games) {
+                if (this.games[loop].name === this.currentGame) {
+                    this.rulesText.html(this.games[loop].rules);
+                }
+            }
+        });
+        this.leaderBoards2 = createButton('Leader Boards');
+        this.leaderBoards2.position(100, 400);
+        this.leaderBoards2.mousePressed(()=>{
+            this.hideAll();
+            this.leaderBoardsF(this.currentGame);
+            this.backPlay.show();
+        });
+        this.createGame = createButton('Create Game');
+        this.createGame.position(100, 500);
+        this.createGame.mousePressed(()=>{
+            this.hideAll();
+            this.backPlay.show();
+            for (let loop in this.games) {
+                if (this.games[loop].name === this.currentGame) {
+                    this.games[loop].form.show();
+                }
+            }
+        });
+        this.joinGame = createButton('Join Game');
+        this.joinGame.position(100, 600);
+        this.joinGame.mousePressed(()=>{
+            let boolean = true;
+            for (let loop in this.games) {
+                if (this.games[loop].name === this.currentGame && boolean) {
+                    database.ref('Games/' + this.currentGame).once('value').then((val)=>{
+                        for (let loop1 in val.val()) {
+                            if (val.val()[loop1].Type === "PUBLIC" && this.games[loop].playerMax > val.val()[loop1].PlayerCount && boolean) {
+                                let players = {};
+                                players[name] = {
+                                    'Score' : 0
+                                }
+                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
+                                this.currentGameName = loop1;
+                                boolean = false;
+                                this.hideAll();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        this.joinCode = createInput('Enter Code');
+        this.joinCode.position(200, 700);
+        this.joinWCode = createButton('Join');
+        this.joinWCode.position(100, 700);
+        this.joinWCode.mousePressed(()=>{
+            let boolean = true;
+            for (let loop in this.games) {
+                if (this.games[loop].name === this.currentGame && boolean) {
+                    database.ref('Games/' + this.currentGame).once('value').then((val)=>{
+                        for (let loop1 in val.val()) {
+                            if (val.val()[loop1].Code == this.joinCode.value() && this.games[loop].playerMax > val.val()[loop1].PlayerCount && boolean) {
+                                let players = {};
+                                players[name] = {
+                                    'Score' : 0
+                                }
+                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
+                                this.currentGameName = loop1;
+                                boolean = false;
+                                this.hideAll();
+                            }
+                        }
+                    });
+                }
+            }
+        });
         this.games = [
             {
                 'name' : "Othello",
                 'button' : createButton("Othello"),
+                'rules' : "A",
+                'playerMin' : 2,
+                'playerMax' : 2,
+                'form' : new OthelloForm()
             }
         ]
         for (let loop1 = 0; loop1 < this.games.length; loop1++) {
@@ -188,8 +280,9 @@ class Form {
         this.changePassword.show();
         this.changeUsername.show();
         this.leaderBoards.show();
+        this.currentGame = "";
         database.ref('Players/' + name + '/Score').off();
-        name = this.enterUsername.value();
+            name = this.enterUsername.value();
         database.ref('Players/' + name + '/Score').once('value').then(function (data) {
             score = data.val();
         });
@@ -210,7 +303,6 @@ class Form {
         }
     }
     leaderBoardsF(type) {
-        this.hideAll();
         topper = [];
         this.ls = [];
         database.ref('Players').once('value').then((val)=>{
@@ -223,7 +315,6 @@ class Form {
         });
         wait[1] = true;
         state = "LeaderBoards";
-        this.backHome.show();
     }
     playF() {
         this.hideAll();
@@ -237,6 +328,13 @@ class Form {
         this.hideAll();
         this.backHome.show();
         this.currentGame = game;
+        this.rules.show();
+        this.leaderBoards2.show();
+        this.createGame.show();
+        this.joinGame.show();
+        this.joinCode.show();
+        this.joinWCode.show();
+        this.currentGameName = "";
         database.ref('Players/' + name + '/Score').once('value').then((val)=>{
             if (val.val()[this.currentGame] === undefined || val.val()[this.currentGame] === null) {
                 database.ref('Players/' + name + '/Score').once('value').then((val2)=>{
@@ -246,7 +344,7 @@ class Form {
                 });
             }
         });
-        state = 'Game Screen';
+        state = "Game Screen";
     }
 }
 
