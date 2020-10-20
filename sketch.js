@@ -55,4 +55,7 @@ function draw() {
         }
         wait[1] = false;
     }
+    if (state === "WAIT") {
+        text("CODE = " + form.code, 100, 100);
+    }
 }
