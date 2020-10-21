@@ -25,6 +25,9 @@ class GameForm {
                         'Code' : this.code,
                         'Players' : players
                     });
+                    database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
+                        this.game = val.val();
+                    });
                     this.private.hide();
                     this.public.hide();
                     this.playerInput.hide();
@@ -44,6 +47,9 @@ class GameForm {
                     'PlayerReq' : this.max,
                     'Code' : this.code,
                     'Players' : players
+                });
+                database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
+                    this.game = val.val();
                 });
                 this.private.hide();
                 this.public.hide();
@@ -71,6 +77,9 @@ class GameForm {
                         'Code' : this.code,
                         'Players' : players
                     });
+                    database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
+                        this.game = val.val();
+                    });
                     this.private.hide();
                     this.public.hide();
                     this.playerInput.hide()
@@ -90,6 +99,9 @@ class GameForm {
                     'PlayerReq' : this.max,
                     'Code' : this.code,
                     'Players' : players
+                });
+                database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
+                    this.game = val.val();
                 });
                 this.public.hide();;
                 this.private.hide();

@@ -57,5 +57,10 @@ function draw() {
     }
     if (state === "WAIT") {
         text("CODE = " + form.code, 100, 100);
+        if (form.games[form.currentGame].form.game !== undefined && form.games[form.currentGame].form.game !== null) {
+            if (form.games[form.currentGame].form.game.PlayerCount == form.games[form.currentGame].form.game.PlayerReq) {
+                state = form.currentGame;
+            }
+        }
     }
 }

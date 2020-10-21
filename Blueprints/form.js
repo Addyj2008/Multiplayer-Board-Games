@@ -202,31 +202,33 @@ class Form {
         this.joinGame.position(100, 600);
         this.joinGame.mousePressed(()=>{
             let boolean = true;
-            for (let loop in this.games) {
-                if (this.games[loop].name === this.currentGame && boolean) {
-                    database.ref('Games/' + this.currentGame).once('value').then((val)=>{
-                        for (let loop1 in val.val()) {
-                            if (val.val()[loop1].Type === "PUBLIC" && val.val()[loop1].PlayerReq > val.val()[loop1].PlayerCount && boolean) {
-                                let players = {};
-                                players[name] = {
-                                    'Score' : 0
-                                }
-                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
-                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/PlayerCount').once('value').then((val)=>{
-                                    database.ref('Games/' + this.currentGame + '/' + loop1).update({
-                                        'PlayerCount' : val.val() + 1
-                                    });
-                                });
-                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/Code').once('value').then((val)=>{
-                                    this.code = val.val()
-                                });
-                                this.currentGameName = loop1;
-                                boolean = false;
-                                this.hideAll();
+            if (boolean) {
+                database.ref('Games/' + this.currentGame).once('value').then((val)=>{
+                    for (let loop1 in val.val()) {
+                        if (val.val()[loop1].Type === "PUBLIC" && val.val()[loop1].PlayerReq > val.val()[loop1].PlayerCount && boolean) {
+                            let players = {};
+                            players[name] = {
+                                'Score' : 0
                             }
+                            database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
+                            database.ref('Games/' + this.currentGame + '/' + loop1 + '/PlayerCount').once('value').then((val)=>{
+                                database.ref('Games/' + this.currentGame + '/' + loop1).update({
+                                    'PlayerCount' : val.val() + 1
+                                });
+                            });
+                            database.ref('Games/' + this.currentGame + '/' + loop1 + '/Code').once('value').then((val)=>{
+                                this.code = val.val()
+                            });
+                            this.currentGameName = loop1;
+                            boolean = false;
+                            this.hideAll();
+                            state = "WAIT";
+                            database.ref('Games/' + this.currentGame + '/' + this.currentGameName).on('value', (val) => {
+                                this.games[this.currentGame].form.game = val.val();
+                            });
                         }
-                    });
-                }
+                    }
+                });
             }
         });
         this.joinCode = createInput('Enter Code');
@@ -235,44 +237,48 @@ class Form {
         this.joinWCode.position(100, 700);
         this.joinWCode.mousePressed(()=>{
             let boolean = true;
-            for (let loop in this.games) {
-                if (this.games[loop].name === this.currentGame && boolean) {
-                    database.ref('Games/' + this.currentGame).once('value').then((val)=>{
-                        for (let loop1 in val.val()) {
-                            if (val.val()[loop1].Code == this.joinCode.value() && val.val()[loop1].PlayerReq > val.val()[loop1].PlayerCount && boolean) {
-                                let players = {};
-                                players[name] = {
-                                    'Score' : 0
-                                }
-                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
-                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/PlayerCount').once('value').then((val)=>{
-                                    database.ref('Games/' + this.currentGame + '/' + loop1).update({
-                                        'PlayerCount' : val.val() + 1
-                                    });
-                                });
-                                database.ref('Games/' + this.currentGame + '/' + loop1 + '/Code').once('value').then((val)=>{
-                                    this.code = val.val()
-                                });
-                                this.currentGameName = loop1;
-                                boolean = false;
-                                this.hideAll();
+            if (boolean) {
+                database.ref('Games/' + this.currentGame).once('value').then((val)=>{
+                    for (let loop1 in val.val()) {
+                        if (val.val()[loop1].Code == this.joinCode.value() && val.val()[loop1].PlayerReq > val.val()[loop1].PlayerCount && boolean) {
+                            let players = {};
+                            players[name] = {
+                                'Score' : 0
                             }
+                            database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
+                            database.ref('Games/' + this.currentGame + '/' + loop1 + '/PlayerCount').once('value').then((val)=>{
+                                database.ref('Games/' + this.currentGame + '/' + loop1).update({
+                                    'PlayerCount' : val.val() + 1
+                                });
+                            });
+                            database.ref('Games/' + this.currentGame + '/' + loop1 + '/Code').once('value').then((val)=>{
+                                this.code = val.val()
+                            });
+                            this.currentGameName = loop1;
+                            boolean = false;
+                            this.hideAll();
+                            state = "WAIT";
+                            database.ref('Games/' + this.currentGame + '/' + this.currentGameName).on('value', (val) => {
+                                this.games[this.currentGame].form.game = val.val();
+                            });
                         }
-                    });
-                }
+                    }
+                });
             }
         });
-        this.games = [
-            {
+        this.games = {
+            'Othello' : {
                 'name' : "Othello",
                 'button' : createButton("Othello"),
                 'rules' : "1. Othello is a board game played between 2 players on an 8 by 8 board using circular pieces.        2. In the begining 4 circular pieces are placed in a checkerboard style format at the centre.       3. Each player chooses a colour and takes turn moving.      4. A player can move on any of the empty squares if moving there gives him/her 1 or more point(s).      5. If there isn't a empty square on which moving is possible for the player the turn gets passed.       6. If no player can move or the whole board is filled then the game ends.       7. Scoring - After a piece is placed if a straight line can be drawn to another piece of the same colour and the line has no empty spots and only contains pieces of a diffferent colour then those pieces change to the colour of the placed piece(Lines can be drawn horizontally, vertically and diagonally).        8. Ending the game - When no player can move or the whole board is filled with pieces then the game ends.      9. Winner - The winner is the person with the most pieces to his name.",
                 'form' : new GameForm(2, 2, "Othello")
             }
-        ]
-        for (let loop1 = 0; loop1 < this.games.length; loop1++) {
-            this.games[loop1].button.position(loop1 % 5 * 100 + 100, (loop1 - loop1 % 5)/5 * 100 + 200);
-            this.games[loop1].button.mousePressed(()=>{this.gameScreen(this.games[loop1].name)});
+        }
+        let loop1 = 0;
+        for (let loop in this.games) {
+            this.games[loop].button.position(loop1 % 5 * 100 + 100, (loop1 - loop1 % 5)/5 * 100 + 200);
+            this.games[loop].button.mousePressed(()=>{this.gameScreen(this.games[loop].name)});
+            loop1++;
         }
         this.signUpPage();
     }
