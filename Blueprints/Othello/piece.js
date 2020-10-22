@@ -1,6 +1,4 @@
-let allPieces = [];
-
-class Piece {
+OthelloCF.Piece = class {
     constructor(x, y, player) {
         this.position = {'x' : x, 'y' : y};
         this.orignalColour = player.colour;
@@ -12,48 +10,48 @@ class Piece {
             ellipseMode(RADIUS);
             ellipse(this.position.x * 55 - 30, this.position.y * 55 - 30, 25, 25);
         }
-        allPieces.push(this);
+        Othello.allPieces.push(this);
     }
 }
 
-function displayAllPieces() {
-    for (loop1 = 0; loop1 < allPieces.length; loop1++) {
-        allPieces[loop1].display();
+OthelloCF.displayAllPieces = function() {
+    for (let loop1 = 0; loop1 < Othello.allPieces.length; loop1++) {
+        Othello.allPieces[loop1].display();
     }
 }
 
-function switchAll(player) {
-    for (loop3 = 0; loop3 < allPieces.length; loop3++) {
-        if (allPieces[loop3].switch) {
-            allPieces[loop3].colour = player.colour;
-            allPieces[loop3].switch = false;
+OthelloCF.switchAll = function(player) {
+    for (let loop3 = 0; loop3 < Othello.allPieces.length; loop3++) {
+        if (Othello.allPieces[loop3].switch) {
+            Othello.allPieces[loop3].colour = player.colour;
+            Othello.allPieces[loop3].switch = false;
         }
     }
 }
 
-function switchAllFalse() {
-    for (loop3 = 0; loop3 < allPieces.length; loop3++) {
-        allPieces[loop3].switch = false;
+OthelloCF.switchAllFalse = function() {
+    for (let loop3 = 0; loop3 < Othello.allPieces.length; loop3++) {
+        Othello.allPieces[loop3].switch = false;
     }
 }
 
-function switchSwitch() {
-    for (loop3 = 0; loop3 < allPieces.length; loop3++) {
-        if (allPieces[loop3].switching) {
-            allPieces[loop3].switch = true;
-            allPieces[loop3].switching = false;
+OthelloCF.switchSwitch = function() {
+    for (loop3 = 0; loop3 < Othello.allPieces.length; loop3++) {
+        if (Othello.allPieces[loop3].switching) {
+            Othello.allPieces[loop3].switch = true;
+            Othello.allPieces[loop3].switching = false;
         }
     }
 }
 
-function switchingAllFalse() {
-    for (loop3 = 0; loop3 < allPieces.length; loop3++) {
-        allPieces[loop3].switching = false;
+OthelloCF.switchingAllFalse = function() {
+    for (loop3 = 0; loop3 < Othello.allPieces.length; loop3++) {
+        Othello.allPieces[loop3].switching = false;
     }
 }
 
-function revertToOrignal() {
-    for (loop1 = 0; loop1 < allPieces.length; loop1++) {
-        allPieces[loop1].colour =  allPieces[loop1].orignalColour;
+OthelloCF.revertToOrignal = function() {
+    for (loop1 = 0; loop1 < Othello.allPieces.length; loop1++) {
+        Othello.allPieces[loop1].colour =  Othello.allPieces[loop1].orignalColour;
     }
 }

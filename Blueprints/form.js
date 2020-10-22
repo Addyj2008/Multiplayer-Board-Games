@@ -271,7 +271,77 @@ class Form {
                 'name' : "Othello",
                 'button' : createButton("Othello"),
                 'rules' : "1. Othello is a board game played between 2 players on an 8 by 8 board using circular pieces.        2. In the begining 4 circular pieces are placed in a checkerboard style format at the centre.       3. Each player chooses a colour and takes turn moving.      4. A player can move on any of the empty squares if moving there gives him/her 1 or more point(s).      5. If there isn't a empty square on which moving is possible for the player the turn gets passed.       6. If no player can move or the whole board is filled then the game ends.       7. Scoring - After a piece is placed if a straight line can be drawn to another piece of the same colour and the line has no empty spots and only contains pieces of a diffferent colour then those pieces change to the colour of the placed piece(Lines can be drawn horizontally, vertically and diagonally).        8. Ending the game - When no player can move or the whole board is filled with pieces then the game ends.      9. Winner - The winner is the person with the most pieces to his name.",
-                'form' : new GameForm(2, 2, "Othello")
+                'form' : new GameForm(2, 2, "Othello"),
+                'setup' : function () {
+                    database.ref('Games/Othello/' + this.currentGameName + '/Game').on('value', (val) => {
+                        for (let loop0 in val.val()) {
+                            if (typeof val.val()[loop0] == "object") {
+                                Othello[loop0] == {};
+                                for (let loop1 in val.val()[loop0]) {
+                                    if (typeof val.val()[loop0][loop1] == "object") {
+                                        Othello[loop0][loop1] == {};
+                                        for (let loop2 in val.val()[loop0][loop1]) {
+                                            if (typeof val.val()[loop0][loop1][loop2] == "object") {
+                                                Othello[loop0][loop1][loop2] == {};
+                                                for (let loop3 in val.val()[loop0][loop1][loop2]) {
+                                                    Othello[loop0][loop1][loop2][loop3] = val.val()[loop0][loop1][loop2][loop3];
+                                                }
+                                            } else {
+                                                Othello[loop0][loop1][loop2] = val.val()[loop0][loop1][loop2];
+                                            }
+                                        }
+                                    } else {
+                                        Othello[loop0][loop1] = val.val()[loop0][loop1];
+                                    }
+                                }
+                            } else {
+                                Othello[loop0] = val.val()[loop0];
+                            }
+                        }
+                    });
+                    Othello.boardX = 8;
+                    Othello.boardY = 8;
+                    Othello.player1 = new OthelloCF.Player(0, 0, 0, "Player 1");
+                    Othello.player2 = new OthelloCF.Player(0, 0, 255, "Player 2");
+                    Othello.basePieces = [new OthelloCF.Piece(4, 4, Othello.player1), new OthelloCF.Piece(4, 5, Othello.player2), new OthelloCF.Piece(5, 4, Othello.player2), new OthelloCF.Piece(5, 5, Othello.player1)];
+                    Othello.turn = 0;
+                    for (let loop1 = 1; loop1 <= Othello.boardX; loop1 += 1) {
+                        for (let loop2 = 1; loop2 <= Othello.boardY; loop2 += 1) {
+                            new OthelloCF.EmptySpace(loop1, loop2);
+                        }
+                    }
+                    Othello.gameState = "PLAY";
+                    strokeWeight(0);
+                
+                    OthelloCF.mouseReleased = function() {
+                        if (Othello.gameState === "PLAY") {
+                            OthelloCF.placePieceAll();
+                        }
+                    }
+                    
+                    OthelloCF.reset = function() {
+                        Othello.turn = 0;
+                        OthelloCF.revertToOrignal();
+                        Othello.allPieces = [];
+                        for (let loop1 = 0; loop1 < Othello.basePieces.length; loop1 += 1) {
+                            Othello.allPieces.push(Othello.basePieces[loop1]);
+                        }
+                        Othello.winners = [];
+                    }
+                    
+                    OthelloCF.endGame = function() {
+                        Othello.gameState = "END";
+                        Othello.winners.push(Othello.allPlayers[0]);
+                        for (let loop1 = 1; loop1 < Othello.allPlayers.length; loop1 += 1) {
+                            if (Othello.allPlayers[loop1].getScore() === Othello.winners[0].getScore()) {
+                                Othello.winners.push(allPlayers[loop1]);
+                            } else if (Othello.allPlayers[loop1].getScore() > Othello.winners[0].getScore()) {
+                                Othello.winners = [Othello.allPlayers[loop1]];
+                            }
+                        }
+                    }
+                },
+                'Remote' : {}
             }
         }
         let loop1 = 0;
@@ -321,6 +391,11 @@ class Form {
         }
         for (let loop1 in this.games) {
             this.games[loop1].button.hide();
+            for (let loop2 in this.games[loop1].form) {
+                if (typeof this.games[loop1].form[loop2].hide == "function") {
+                    this.games[loop1].form[loop2].hide();
+                }
+            }
         }
     }
     leaderBoardsF(type) {

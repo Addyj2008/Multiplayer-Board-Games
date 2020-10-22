@@ -1,12 +1,22 @@
-let allPlayers = [], loop1, loop2, loop3, loop4, loop5, loop6, loop7, condition1;
+let Othello = {
+    'allPlayers' : [],
+    'allPieces' : [],
+    'allEmptySpaces' : [],
+    'winners' : [],
+    'basePieces' : [],
+}
 
-class Player {
+let OthelloCF = {};
+
+let OthelloR = {};
+
+OthelloCF.Player = class {
     constructor(r, g, b, name) {
         this.name = name;
         this.colour = {'r' : r, 'g' : g, 'b' : b};
-        this.turn = allPlayers.length;
+        this.turn = Othello.allPlayers.length;
         this.turnText = function(x, y) {
-            if (turn % allPlayers.length === this.turn) {
+            if (turn % Othello.allPlayers.length === this.turn) {
                 fill(this.colour.r, this.colour.g, this.colour.b);
                 text("Turn of : " + this.name, x, y);
             }
@@ -14,8 +24,8 @@ class Player {
         this.score = 0;
         this.getScore = function() {
             this.score = 0;
-            for(loop2 = 0; loop2 < allPieces.length; loop2++) {
-                if (allPieces[loop2].colour.r === this.colour.r && allPieces[loop2].colour.g === this.colour.g && allPieces[loop2].colour.b === this.colour.b) {
+            for(let loop2 = 0; loop2 < Othello.allPieces.length; loop2++) {
+                if (Othello.allPieces[loop2].colour.r === this.colour.r && Othello.allPieces[loop2].colour.g === this.colour.g && Othello.allPieces[loop2].colour.b === this.colour.b) {
                     this.score++;
                 }
             }
@@ -26,50 +36,50 @@ class Player {
             fill(this.colour.r, this.colour.g, this.colour.b);
             text("Score of " + this.name + " = " + this.getScore(), x, y);
         }
-        allPlayers.push(this);
+        Othello.allPlayers.push(this);
     }
 }
 
-function turnTextAll(x, y) {
-    for(loop1 = 0; loop1 < allPlayers.length; loop1++) {
-        allPlayers[loop1].turnText(x, y);
+OthelloCF.turnTextAll = function(x, y) {
+    for(let loop1 = 0; loop1 < Othello.allPlayers.length; loop1++) {
+        Othello.allPlayers[loop1].turnText(x, y);
     }
 }
 
-function turnPossible(turn) {
-    for (loop1 = 0; loop1 < allEmptySpaces.length; loop1 += 1) {
-        if (allEmptySpaces[loop1].empty) {
-            for(loop2 = 0; loop2 < allPlayers.length; loop2++) {
-                if (allPlayers[loop2].turn === turn % allPlayers.length) {
-                    for (loop6 = -1; loop6 <= 1; loop6 += 1) {
-                        for (loop7 = -1; loop7 <= 1; loop7 += 1) {
+OthelloCF.turnPossible = function(turn) {
+    for (let loop1 = 0; loop1 < Othello.allEmptySpaces.length; loop1 += 1) {
+        if (Othello.allEmptySpaces[loop1].empty) {
+            for(let loop2 = 0; loop2 < Othello.allPlayers.length; loop2++) {
+                if (Othello.allPlayers[loop2].turn === turn % Othello.allPlayers.length) {
+                    for (let loop6 = -1; loop6 <= 1; loop6 += 1) {
+                        for (let loop7 = -1; loop7 <= 1; loop7 += 1) {
                             if (loop7 != 0 || loop6 != 0) {
-                                condition1 = true;
-                                for (loop3 = {'x' : allEmptySpaces[loop1].position.x, 'y' : allEmptySpaces[loop1].position.y}; condition1;) {
+                                let condition1 = true;
+                                for (let loop3 = {'x' : Othello.allEmptySpaces[loop1].position.x, 'y' : Othello.allEmptySpaces[loop1].position.y}; condition1;) {
                                     loop3.x += loop6;
                                     loop3.y += loop7;
                                     condition1 = false;
-                                    for (loop4 = 0; loop4 < allPieces.length; loop4++) {
-                                        if (allPieces[loop4].position.x === loop3.x && allPieces[loop4].position.y === loop3.y) {
-                                            if (allPlayers[loop2].colour.r != allPieces[loop4].colour.r || allPlayers[loop2].colour.g != allPieces[loop4].colour.g || allPlayers[loop2].colour.b != allPieces[loop4].colour.b) {
-                                                allPieces[loop4].switching = true;
+                                    for (let loop4 = 0; loop4 < Othello.allPieces.length; loop4++) {
+                                        if (Othello.allPieces[loop4].position.x === loop3.x && Othello.allPieces[loop4].position.y === loop3.y) {
+                                            if (Othello.allPlayers[loop2].colour.r != Othello.allPieces[loop4].colour.r || Othello.allPlayers[loop2].colour.g != Othello.allPieces[loop4].colour.g || Othello.allPlayers[loop2].colour.b != Othello.allPieces[loop4].colour.b) {
+                                                Othello.allPieces[loop4].switching = true;
                                             }
                                             condition1 = true;
-                                            if (allPlayers[loop2].colour.r === allPieces[loop4].colour.r && allPlayers[loop2].colour.g === allPieces[loop4].colour.g && allPlayers[loop2].colour.b === allPieces[loop4].colour.b) {
-                                                switchSwitch();
+                                            if (Othello.allPlayers[loop2].colour.r === Othello.allPieces[loop4].colour.r && Othello.allPlayers[loop2].colour.g === Othello.allPieces[loop4].colour.g && Othello.allPlayers[loop2].colour.b === Othello.allPieces[loop4].colour.b) {
+                                                OthelloCF.switchSwitch();
                                                 condition1 = false;
                                             }
-                                            loop4 = allPieces.length;
+                                            loop4 = Othello.allPieces.length;
                                         }
                                     }
                                 }
-                                switchingAllFalse();
+                                OthelloCF.switchingAllFalse();
                             }
                         }
                     }
-                    for (loop4 = 0; loop4 < allPieces.length; loop4 += 1) {
-                        if (allPieces[loop4].switch) {
-                            switchAllFalse();
+                    for (let loop4 = 0; loop4 < Othello.allPieces.length; loop4 += 1) {
+                        if (Othello.allPieces[loop4].switch) {
+                            OthelloCF.switchAllFalse();
                             return true;
                         }
                     }
@@ -80,9 +90,9 @@ function turnPossible(turn) {
     return false;
 }
 
-function anyTurnPossible() {
-    for (loop5 = 0; loop5 < allPlayers.length; loop5 += 1) {
-        if (turnPossible(loop5)) {
+OthelloCF.anyTurnPossible = function() {
+    for (let loop5 = 0; loop5 < Othello.allPlayers.length; loop5 += 1) {
+        if (OthelloCF.turnPossible(loop5)) {
             return true;
         }
     }
