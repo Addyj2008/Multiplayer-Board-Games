@@ -100,15 +100,21 @@ function draw() {
                                 delete OthelloR[loop0][loop1][loop2];
                             }
                         }
+                    } else if (typeof OthelloR[loop0][loop1] == "function") {
+                        OthelloR[loop0][loop1] = undefined;
+                        delete OthelloR[loop0][loop1];
                     }
                 }
+            } else if (typeof OthelloR[loop0] == "function") {
+                OthelloR[loop0] = undefined;
+                delete OthelloR[loop0];
             }
         }
         database.ref('Games/Othello/' + form.currentGameName + '/Game').update(OthelloR);
         OthelloCF.displayAllEmptySpaces();
         OthelloCF.displayAllPieces();
         OthelloCF.EmptyCheck();
-        if (OthelloCF.gameState === "PLAY") {
+        if (Othello.gameState === "PLAY") {
             if (!OthelloCF.turnPossible(Othello.turn)) {
                 Othello.turn += 1;
             }
@@ -142,7 +148,7 @@ function draw() {
 }
 
 function mouseReleased() {
-    if (state === "Othello") {
+    if (state === "Othello" && typeof OthelloCF.mouseReleased == "function") {
         OthelloCF.mouseReleased();
     }
 }

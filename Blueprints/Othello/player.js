@@ -16,7 +16,7 @@ OthelloCF.Player = class {
         this.colour = {'r' : r, 'g' : g, 'b' : b};
         this.turn = Othello.allPlayers.length;
         this.turnText = function(x, y) {
-            if (turn % Othello.allPlayers.length === this.turn) {
+            if (Othello.turn % Othello.allPlayers.length === this.turn) {
                 fill(this.colour.r, this.colour.g, this.colour.b);
                 text("Turn of : " + this.name, x, y);
             }
