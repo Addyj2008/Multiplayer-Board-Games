@@ -44,6 +44,7 @@ OthelloCF.EmptySpace = class {
                                 Othello.turn += 1;
                                 loop3 = Othello.allPieces.length;
                                 loop2 = Othello.allPlayers.length;
+                                OthelloCF.update();
                             }
                         }
                     }

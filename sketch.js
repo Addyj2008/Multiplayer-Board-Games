@@ -61,75 +61,7 @@ function draw() {
             if (form.games[form.currentGame].form.game.PlayerCount == form.games[form.currentGame].form.game.PlayerReq) {
                 state = form.currentGame;
                 form.games[form.currentGame].setup();
-                OthelloR = {};
-                for (let loop0 in Othello) {
-                    if (typeof Othello[loop0] == "object") {
-                        OthelloR[loop0] = {};
-                        for (let loop1 in Othello[loop0]) {
-                            if (typeof Othello[loop0][loop1] == "object") {
-                                OthelloR[loop0][loop1] = {};
-                                for (let loop2 in Othello[loop0][loop1]) {
-                                    if (typeof Othello[loop0][loop1][loop2] == "object") {
-                                        OthelloR[loop0][loop1][loop2] = {};
-                                        for (let loop3 in Othello[loop0][loop1][loop2]) {
-                                            OthelloR[loop0][loop1][loop2][loop3] = Othello[loop0][loop1][loop2][loop3];
-                                        }
-                                    } else {
-                                        OthelloR[loop0][loop1][loop2] = Othello[loop0][loop1][loop2];
-                                    }
-                                }
-                            } else {
-                                OthelloR[loop0][loop1] = Othello[loop0][loop1];
-                            }
-                        }
-                    } else {
-                        OthelloR[loop0] = Othello[loop0];
-                    }
-                }
-                for (let loop0 in OthelloR) {
-                    if (typeof OthelloR[loop0] == "object") {
-                        for (let loop1 in OthelloR[loop0]) {
-                            if (typeof OthelloR[loop0][loop1] == "object") {
-                                for (let loop2 in OthelloR[loop0][loop1]) {
-                                    if (typeof OthelloR[loop0][loop1][loop2] == "function") {
-                                        OthelloR[loop0][loop1][loop2] = undefined;
-                                        delete OthelloR[loop0][loop1][loop2];
-                                    }
-                                }
-                            } else if (typeof OthelloR[loop0][loop1] == "function") {
-                                OthelloR[loop0][loop1] = undefined;
-                                delete OthelloR[loop0][loop1];
-                            }
-                        }
-                    } else if (typeof OthelloR[loop0] == "function") {
-                        OthelloR[loop0] = undefined;
-                        delete OthelloR[loop0];
-                    }
-                }
-                database.ref('Games/Othello/' + form.currentGameName + '/Game').update(OthelloR);
-                database.ref('Games/Othello/' + form.currentGameName + '/Game').on('value', (val) => {
-                    if (val.val() !== null && val.val() !== undefined) {
-                        Othello.turn = val.val().turn;
-                        for (let loop in val.val().allPieces) {
-                            if (Othello.allPieces[loop] === undefined || Othello.allPieces[loop] === null) {
-                                new OthelloCF.Piece(val.val().allPieces[loop].position.x, val.val().allPieces[loop].position.y, {'colour' : val.val().allPieces[loop].colour});
-                            }
-                            for (let loop2 in val.val().allPieces[loop]) {
-                                Othello.allPieces[loop][loop2] = val.val().allPieces[loop][loop2];                         
-                            }
-                        }
-                        for (let loop in val.val().allEmptySpaces) {
-                            for (let loop2 in val.val().allEmptySpaces[loop]) {
-                                Othello.allEmptySpaces[loop][loop2] = val.val().allEmptySpaces[loop][loop2];                        
-                            }
-                        }
-                        for (let loop in val.val().allPlayers) {
-                            for (let loop2 in val.val().allPlayers[loop]) {
-                                Othello.allPlayers[loop][loop2] = val.val().allPlayers[loop][loop2];   
-                            }
-                        }
-                    }
-                });
+                
             }
         }
     }
@@ -167,52 +99,6 @@ function draw() {
                 OthelloCF.reset();
             }
         }
-        OthelloR = {};
-        for (let loop0 in Othello) {
-            if (typeof Othello[loop0] == "object") {
-                OthelloR[loop0] = {};
-                for (let loop1 in Othello[loop0]) {
-                    if (typeof Othello[loop0][loop1] == "object") {
-                        OthelloR[loop0][loop1] = {};
-                        for (let loop2 in Othello[loop0][loop1]) {
-                            if (typeof Othello[loop0][loop1][loop2] == "object") {
-                                OthelloR[loop0][loop1][loop2] = {};
-                                for (let loop3 in Othello[loop0][loop1][loop2]) {
-                                    OthelloR[loop0][loop1][loop2][loop3] = Othello[loop0][loop1][loop2][loop3];
-                                }
-                            } else {
-                                OthelloR[loop0][loop1][loop2] = Othello[loop0][loop1][loop2];
-                            }
-                        }
-                    } else {
-                        OthelloR[loop0][loop1] = Othello[loop0][loop1];
-                    }
-                }
-            } else {
-                OthelloR[loop0] = Othello[loop0];
-            }
-        }
-        for (let loop0 in OthelloR) {
-            if (typeof OthelloR[loop0] == "object") {
-                for (let loop1 in OthelloR[loop0]) {
-                    if (typeof OthelloR[loop0][loop1] == "object") {
-                        for (let loop2 in OthelloR[loop0][loop1]) {
-                            if (typeof OthelloR[loop0][loop1][loop2] == "function") {
-                                OthelloR[loop0][loop1][loop2] = undefined;
-                                delete OthelloR[loop0][loop1][loop2];
-                            }
-                        }
-                    } else if (typeof OthelloR[loop0][loop1] == "function") {
-                        OthelloR[loop0][loop1] = undefined;
-                        delete OthelloR[loop0][loop1];
-                    }
-                }
-            } else if (typeof OthelloR[loop0] == "function") {
-                OthelloR[loop0] = undefined;
-                delete OthelloR[loop0];
-            }
-        }
-        database.ref('Games/Othello/' + form.currentGameName + '/Game').update(OthelloR);
     }
 }
 
