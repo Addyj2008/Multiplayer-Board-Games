@@ -61,10 +61,112 @@ function draw() {
             if (form.games[form.currentGame].form.game.PlayerCount == form.games[form.currentGame].form.game.PlayerReq) {
                 state = form.currentGame;
                 form.games[form.currentGame].setup();
+                OthelloR = {};
+                for (let loop0 in Othello) {
+                    if (typeof Othello[loop0] == "object") {
+                        OthelloR[loop0] = {};
+                        for (let loop1 in Othello[loop0]) {
+                            if (typeof Othello[loop0][loop1] == "object") {
+                                OthelloR[loop0][loop1] = {};
+                                for (let loop2 in Othello[loop0][loop1]) {
+                                    if (typeof Othello[loop0][loop1][loop2] == "object") {
+                                        OthelloR[loop0][loop1][loop2] = {};
+                                        for (let loop3 in Othello[loop0][loop1][loop2]) {
+                                            OthelloR[loop0][loop1][loop2][loop3] = Othello[loop0][loop1][loop2][loop3];
+                                        }
+                                    } else {
+                                        OthelloR[loop0][loop1][loop2] = Othello[loop0][loop1][loop2];
+                                    }
+                                }
+                            } else {
+                                OthelloR[loop0][loop1] = Othello[loop0][loop1];
+                            }
+                        }
+                    } else {
+                        OthelloR[loop0] = Othello[loop0];
+                    }
+                }
+                for (let loop0 in OthelloR) {
+                    if (typeof OthelloR[loop0] == "object") {
+                        for (let loop1 in OthelloR[loop0]) {
+                            if (typeof OthelloR[loop0][loop1] == "object") {
+                                for (let loop2 in OthelloR[loop0][loop1]) {
+                                    if (typeof OthelloR[loop0][loop1][loop2] == "function") {
+                                        OthelloR[loop0][loop1][loop2] = undefined;
+                                        delete OthelloR[loop0][loop1][loop2];
+                                    }
+                                }
+                            } else if (typeof OthelloR[loop0][loop1] == "function") {
+                                OthelloR[loop0][loop1] = undefined;
+                                delete OthelloR[loop0][loop1];
+                            }
+                        }
+                    } else if (typeof OthelloR[loop0] == "function") {
+                        OthelloR[loop0] = undefined;
+                        delete OthelloR[loop0];
+                    }
+                }
+                database.ref('Games/Othello/' + form.currentGameName + '/Game').update(OthelloR);
+                database.ref('Games/Othello/' + form.currentGameName + '/Game').on('value', (val) => {
+                    if (val.val() !== null && val.val() !== undefined) {
+                        Othello.turn = val.val().turn;
+                        for (let loop in val.val().allPieces) {
+                            if (Othello.allPieces[loop] === undefined || Othello.allPieces[loop] === null) {
+                                new OthelloCF.Piece(val.val().allPieces[loop].position.x, val.val().allPieces[loop].position.y, {'colour' : val.val().allPieces[loop].colour});
+                            }
+                            for (let loop2 in val.val().allPieces[loop]) {
+                                Othello.allPieces[loop][loop2] = val.val().allPieces[loop][loop2];                         
+                            }
+                        }
+                        for (let loop in val.val().allEmptySpaces) {
+                            for (let loop2 in val.val().allEmptySpaces[loop]) {
+                                Othello.allEmptySpaces[loop][loop2] = val.val().allEmptySpaces[loop][loop2];                        
+                            }
+                        }
+                        for (let loop in val.val().allPlayers) {
+                            for (let loop2 in val.val().allPlayers[loop]) {
+                                Othello.allPlayers[loop][loop2] = val.val().allPlayers[loop][loop2];   
+                            }
+                        }
+                    }
+                });
             }
         }
     }
     if (state === "Othello") {
+        OthelloCF.displayAllEmptySpaces();
+        OthelloCF.displayAllPieces();
+        OthelloCF.EmptyCheck();
+        if (Othello.gameState === "PLAY") {
+            if (!OthelloCF.turnPossible(Othello.turn)) {
+                Othello.turn += 1;
+            }
+            OthelloCF.turnTextAll(0, Othello.boardY * 55 + 10);
+            for (let loop1 = 0; loop1 < Othello.allPlayers.length; loop1 += 1) {
+                Othello.allPlayers[loop1].printScore(0,  Othello.boardY * 55 + 25 + loop1 * 15);
+            }
+            if (!OthelloCF.anyTurnPossible()) {
+                OthelloCF.endGame();
+            }
+        } else if (Othello.gameState === "END") {
+            fill(0, 255, 0);
+            text("Press R to restart", 0, Othello.boardY * 55 + 10);
+            if (Othello.winners.length === 1) {
+                fill(Othello.winners[0].colour.r, Othello.winners[0].colour.g, Othello.winners[0].colour.b);
+                text("The WINNER is : " + Othello.winners[0].name, 0, Othello.boardY * 55 + 25);
+            } else {
+                fill(0, 255, 0);
+                text("TIE between :", 0, Othello.boardY * 55 + 25);
+                for (let loop1 = 0; loop1 < Othello.allPlayers.length; loop1 += 1) {
+                    fill(Othello.winners[loop1].colour.r, Othello.winners[loop1].colour.g, Othello.winners[loop1].colour.b);
+                    text((loop1 + 1) + ". " + Othello.winners[loop1].name, 0, Othello.boardY * 55 + 40 + loop1 * 15);
+                }
+            }
+            if (keyCode === 114) {
+                Othello.gameState = "PLAY";
+                OthelloCF.reset();
+            }
+        }
         OthelloR = {};
         for (let loop0 in Othello) {
             if (typeof Othello[loop0] == "object") {
@@ -111,39 +213,6 @@ function draw() {
             }
         }
         database.ref('Games/Othello/' + form.currentGameName + '/Game').update(OthelloR);
-        OthelloCF.displayAllEmptySpaces();
-        OthelloCF.displayAllPieces();
-        OthelloCF.EmptyCheck();
-        if (Othello.gameState === "PLAY") {
-            if (!OthelloCF.turnPossible(Othello.turn)) {
-                Othello.turn += 1;
-            }
-            OthelloCF.turnTextAll(0, Othello.boardY * 55 + 10);
-            for (let loop1 = 0; loop1 < Othello.allPlayers.length; loop1 += 1) {
-                Othello.allPlayers[loop1].printScore(0,  Othello.boardY * 55 + 25 + loop1 * 15);
-            }
-            if (!OthelloCF.anyTurnPossible()) {
-                OthelloCF.endGame();
-            }
-        } else if (Othello.gameState === "END") {
-            fill(0, 255, 0);
-            text("Press R to restart", 0, Othello.boardY * 55 + 10);
-            if (Othello.winners.length === 1) {
-                fill(Othello.winners[0].colour.r, Othello.winners[0].colour.g, Othello.winners[0].colour.b);
-                text("The WINNER is : " + Othello.winners[0].name, 0, Othello.boardY * 55 + 25);
-            } else {
-                fill(0, 255, 0);
-                text("TIE between :", 0, Othello.boardY * 55 + 25);
-                for (let loop1 = 0; loop1 < Othello.allPlayers.length; loop1 += 1) {
-                    fill(Othello.winners[loop1].colour.r, Othello.winners[loop1].colour.g, Othello.winners[loop1].colour.b);
-                    text((loop1 + 1) + ". " + Othello.winners[loop1].name, 0, Othello.boardY * 55 + 40 + loop1 * 15);
-                }
-            }
-            if (keyCode === 114) {
-                Othello.gameState = "PLAY";
-                OthelloCF.reset();
-            }
-        }
     }
 }
 

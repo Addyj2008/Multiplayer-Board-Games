@@ -23,7 +23,8 @@ class GameForm {
                         'PlayerCount' : 1,
                         'PlayerReq' : this.playerInput.value(),
                         'Code' : this.code,
-                        'Players' : players
+                        'Players' : players,
+                        'Game' : 0
                     });
                     database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
                         this.game = val.val();
@@ -33,6 +34,7 @@ class GameForm {
                     this.playerInput.hide();
                     form.backPlay.hide();
                     form.code = this.code;
+                    form.currentGameName = name;
                     state = "WAIT";
                 }
             } else {
@@ -55,6 +57,7 @@ class GameForm {
                 this.public.hide();
                 form.backPlay.hide();
                 form.code = this.code;
+                form.currentGameName = name;
                 state = "WAIT";
             }
         });
@@ -85,6 +88,7 @@ class GameForm {
                     this.playerInput.hide()
                     form.backPlay.hide();
                     form.code = this.code;
+                    form.currentGameName = name;
                     state = "WAIT";
                 }
             } else {
@@ -107,6 +111,7 @@ class GameForm {
                 this.private.hide();
                 form.backPlay.hide();
                 form.code = this.code;
+                form.currentGameName = name;
                 state = "WAIT";
             }
         });

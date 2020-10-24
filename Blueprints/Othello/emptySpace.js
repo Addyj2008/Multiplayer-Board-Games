@@ -7,7 +7,7 @@ OthelloCF.EmptySpace = class {
             fill(0, 255, 0);
             rect(this.position.x * 55 - 30, this.position.y * 55 - 30, 50, 50);
         }
-        this.placePiece = () => {
+        this.placePiece = function() {
             if (mouseX - this.position.x * 55 + 30 < 25 && mouseX - this.position.x * 55 + 30 > -25 && mouseY - this.position.y * 55 + 30 < 25 && mouseY - this.position.y * 55 + 30 > -25 && this.empty) {
                 for(let loop2 = 0; loop2 < Othello.allPlayers.length; loop2++) {
                     if (Othello.allPlayers[loop2].turn === Othello.turn % Othello.allPlayers.length) {
@@ -44,7 +44,6 @@ OthelloCF.EmptySpace = class {
                                 Othello.turn += 1;
                                 loop3 = Othello.allPieces.length;
                                 loop2 = Othello.allPlayers.length;
-                                loop1 = Othello.allEmptySpaces.length;
                             }
                         }
                     }
