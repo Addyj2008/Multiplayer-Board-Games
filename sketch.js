@@ -1,7 +1,7 @@
 let form, database, name, turn, score, state, wait = [], oldName, topper = [];
 
 function setup () {
-    createCanvas(10000, 10000)
+    createCanvas(5000, 5000)
     database = firebase.database();
     form = new Form();
 }
