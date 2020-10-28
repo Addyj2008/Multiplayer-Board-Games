@@ -7,7 +7,7 @@ function setup () {
 }
 
 function draw() {
-    background(255, 255, 255);
+    background(0, 255, 0);
     if (state === "Home" && score !== undefined && score !== null) {
         text("Score = " + score.Total, 100, 200);
     } else if (state === "Game Screen" && score !== undefined && score !== null) {
