@@ -15,7 +15,8 @@ class GameForm {
                 if (this.playerInput.value() >= this.min && this.playerInput.value() <= this.max && this.playerInput.value() !== "") {
                     let players = {};
                     players[name] = {
-                        'Score' : 0
+                        'Score' : 0,
+                        'Turn' : 0
                     }
                     this.code = round(random(1, 9) * 10000);
                     database.ref('Games/' + this.name + '/' + name).update({
@@ -40,7 +41,8 @@ class GameForm {
             } else {
                 let players = {};
                 players[name] = {
-                    'Score' : 0
+                    'Score' : 0,
+                    'Turn' : 0
                 }
                 this.code = round(random(1, 9) * 10000);
                 database.ref('Games/' + this.name + '/' + name).update({
@@ -48,7 +50,8 @@ class GameForm {
                     'PlayerCount' : 1,
                     'PlayerReq' : this.max,
                     'Code' : this.code,
-                    'Players' : players
+                    'Players' : players,
+                    'Game' : 0
                 });
                 database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
                     this.game = val.val();
@@ -70,7 +73,8 @@ class GameForm {
                 if (this.playerInput.value() >= this.min && this.playerInput.value() <= this.max && this.playerInput.value() !== "") {
                     let players = {};
                     players[name] = {
-                        'Score' : 0
+                        'Score' : 0,
+                        'Turn' : 0
                     }
                     this.code = round(random(1, 9) * 10000);
                     database.ref('Games/' + this.name + '/' + name).update({
@@ -78,7 +82,8 @@ class GameForm {
                         'PlayerCount' : 1,
                         'PlayerReq' : this.playerInput.value(),
                         'Code' : this.code,
-                        'Players' : players
+                        'Players' : players,
+                        'Game' : 0
                     });
                     database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
                         this.game = val.val();
@@ -94,7 +99,8 @@ class GameForm {
             } else {
                 let players = {};
                 players[name] = {
-                    'Score' : 0
+                    'Score' : 0,
+                    'Turn' : 0
                 }
                 this.code = round(random(1, 9) * 10000);
                 database.ref('Games/' + this.name + '/' + name).update({
@@ -102,7 +108,8 @@ class GameForm {
                     'PlayerCount' : 1,
                     'PlayerReq' : this.max,
                     'Code' : this.code,
-                    'Players' : players
+                    'Players' : players,
+                    'Game' : 0
                 });
                 database.ref('Games/' + this.name + '/' + name).on('value', (val) => {
                     this.game = val.val();

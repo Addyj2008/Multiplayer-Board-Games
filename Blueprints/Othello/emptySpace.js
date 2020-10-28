@@ -56,8 +56,10 @@ OthelloCF.EmptySpace = class {
 }
 
 OthelloCF.placePieceAll = function(){
-    for(let loop1 = 0; loop1 < Othello.allEmptySpaces.length; loop1++) {
-        Othello.allEmptySpaces[loop1].placePiece();
+    if (turn === Othello.turn % Othello.allPlayers.length) {
+        for(let loop1 = 0; loop1 < Othello.allEmptySpaces.length; loop1++) {
+            Othello.allEmptySpaces[loop1].placePiece();
+        }
     }
 }
 

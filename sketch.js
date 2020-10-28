@@ -1,4 +1,4 @@
-let form, database, name, score, state, wait = [], oldName, topper = [];
+let form, database, name, turn, score, state, wait = [], oldName, topper = [];
 
 function setup () {
     createCanvas(1000, 1000)

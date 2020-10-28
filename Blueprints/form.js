@@ -208,7 +208,8 @@ class Form {
                         if (val.val()[loop1].Type === "PUBLIC" && val.val()[loop1].PlayerReq > val.val()[loop1].PlayerCount && boolean) {
                             let players = {};
                             players[name] = {
-                                'Score' : 0
+                                'Score' : 0,
+                                'Turn' : val.val()[loop1].PlayerCount
                             }
                             database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
                             database.ref('Games/' + this.currentGame + '/' + loop1 + '/PlayerCount').once('value').then((val)=>{
@@ -243,7 +244,8 @@ class Form {
                         if (val.val()[loop1].Code == this.joinCode.value() && val.val()[loop1].PlayerReq > val.val()[loop1].PlayerCount && boolean) {
                             let players = {};
                             players[name] = {
-                                'Score' : 0
+                                'Score' : 0,
+                                'Turn' : val.val()[loop1].PlayerCount
                             }
                             database.ref('Games/' + this.currentGame + '/' + loop1 + '/Players').update(players);
                             database.ref('Games/' + this.currentGame + '/' + loop1 + '/PlayerCount').once('value').then((val)=>{
@@ -275,9 +277,9 @@ class Form {
                 'setup' : function () {
                     Othello.boardX = 8;
                     Othello.boardY = 8;
-                    Othello.player1 = new OthelloCF.Player(0, 0, 0, "Player 1");
-                    Othello.player2 = new OthelloCF.Player(0, 0, 255, "Player 2");
-                    Othello.basePieces = [new OthelloCF.Piece(4, 4, Othello.player1), new OthelloCF.Piece(4, 5, Othello.player2), new OthelloCF.Piece(5, 4, Othello.player2), new OthelloCF.Piece(5, 5, Othello.player1)];
+                    new OthelloCF.Player(0, 0, 0, "Player 1");
+                    new OthelloCF.Player(0, 0, 255, "Player 2");
+                    Othello.basePieces = [new OthelloCF.Piece(4, 4, Othello.allPlayers[0]), new OthelloCF.Piece(4, 5, Othello.allPlayers[1]), new OthelloCF.Piece(5, 4, Othello.allPlayers[1]), new OthelloCF.Piece(5, 5, Othello.allPlayers[0])];
                     Othello.turn = 0;
                     for (let loop1 = 1; loop1 <= Othello.boardX; loop1 += 1) {
                         for (let loop2 = 1; loop2 <= Othello.boardY; loop2 += 1) {
@@ -286,7 +288,6 @@ class Form {
                     }
                     Othello.gameState = "PLAY";
                     strokeWeight(0);
-                
                     OthelloCF.mouseReleased = function() {
                         if (Othello.gameState === "PLAY") {
                             OthelloCF.placePieceAll();
@@ -308,11 +309,20 @@ class Form {
                         Othello.winners.push(Othello.allPlayers[0]);
                         for (let loop1 = 1; loop1 < Othello.allPlayers.length; loop1 += 1) {
                             if (Othello.allPlayers[loop1].getScore() === Othello.winners[0].getScore()) {
-                                Othello.winners.push(allPlayers[loop1]);
+                                Othello.winners.push(Othello.allPlayers[loop1]);
                             } else if (Othello.allPlayers[loop1].getScore() > Othello.winners[0].getScore()) {
                                 Othello.winners = [Othello.allPlayers[loop1]];
                             }
                         }
+                        for (let loop1 in Othello.allPlayers) {
+                            database.ref('Players/' + Othello.allPlayers[loop1].name + '/Score').once('value').then((val) => {  
+                                database.ref('Players/' + Othello.allPlayers[loop1].name + '/Score').update({
+                                    'Total' : val.val().Total + (Othello.allPlayers[loop1].getScore() - 40)*1000/40,
+                                    'Othello' : val.val().Total + (Othello.allPlayers[loop1].getScore() - 40)*1000/40
+                                });
+                            });
+                        }
+                        OthelloCF.update();
                     }
                     OthelloCF.update = function() {
                         OthelloR = {};
@@ -365,29 +375,44 @@ class Form {
                     OthelloCF.update();
                     database.ref('Games/Othello/' + form.currentGameName + '/Game').on('value', (val) => {
                         if (val.val() !== null && val.val() !== undefined) {
-                            Othello.turn = val.val().turn;
-                            for (let loop in val.val().allPieces) {
-                                if (Othello.allPieces[loop] === undefined || Othello.allPieces[loop] === null) {
-                                    new OthelloCF.Piece(val.val().allPieces[loop].position.x, val.val().allPieces[loop].position.y, {'colour' : val.val().allPieces[loop].colour});
-                                }
-                                for (let loop2 in val.val().allPieces[loop]) {
-                                    Othello.allPieces[loop][loop2] = val.val().allPieces[loop][loop2];                         
+                            for (let loop1 = 0; loop1 < val.val().allPieces.length - Othello.allPieces.length; loop1++) {
+                                Othello.allPieces.push(new OthelloCF.Piece(val.val().allPieces[Othello.allPieces.length + loop1].position.x, val.val().allPieces[Othello.allPieces.length + loop1].position.y, {'colour' : val.val().allPieces[Othello.allPieces.length + loop1].orignalColour}, false));
+                            }
+                            for (let loop0 in val.val()) {
+                                if (typeof val.val()[loop0] == "object") {
+                                    for (let loop1 in val.val()[loop0]) {
+                                        if (typeof val.val()[loop0][loop1] == "object") {
+                                            for (let loop2 in val.val()[loop0][loop1]) {
+                                                if (typeof val.val()[loop0][loop1][loop2] == "object") {
+                                                    for (let loop3 in val.val()[loop0][loop1][loop2]) {
+                                                        Othello[loop0][loop1][loop2][loop3] = val.val()[loop0][loop1][loop2][loop3];
+                                                    }
+                                                } else {
+                                                    Othello[loop0][loop1][loop2] = val.val()[loop0][loop1][loop2];
+                                                }
+                                            }
+                                        } else {
+                                            Othello[loop0][loop1] = val.val()[loop0][loop1];
+                                        }
+                                    }
+                                } else {
+                                    Othello[loop0] = val.val()[loop0];
                                 }
                             }
-                            for (let loop in val.val().allEmptySpaces) {
-                                for (let loop2 in val.val().allEmptySpaces[loop]) {
-                                    Othello.allEmptySpaces[loop][loop2] = val.val().allEmptySpaces[loop][loop2];                        
-                                }
-                            }
-                            for (let loop in val.val().allPlayers) {
-                                for (let loop2 in val.val().allPlayers[loop]) {
-                                    Othello.allPlayers[loop][loop2] = val.val().allPlayers[loop][loop2];   
-                                }
+                            for (let loop0 in val.val().allPieces) {
+                                Othello.allPieces[loop0].colour = {'r' : val.val().allPieces[loop0].colour.r, 'g' : val.val().allPieces[loop0].colour.g, 'b' : val.val().allPieces[loop0].colour.b};
                             }
                         }
                     });
-                },
-                'Remote' : {}
+                    database.ref('Games/Othello/' + form.currentGameName + '/Players').once('value').then((val) => {
+                        for (let loop in val.val()) {
+                            Othello.allPlayers[val.val()[loop].Turn].name = loop;
+                            if (loop === name) {
+                                turn = val.val()[loop].Turn;
+                            }
+                        }
+                    });
+                }
             }
         }
         let loop1 = 0;

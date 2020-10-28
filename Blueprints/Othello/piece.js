@@ -1,5 +1,5 @@
 OthelloCF.Piece = class {
-    constructor(x, y, player) {
+    constructor(x, y, player, boolean = true) {
         this.position = {'x' : x, 'y' : y};
         this.orignalColour = player.colour;
         this.colour = player.colour;
@@ -10,7 +10,9 @@ OthelloCF.Piece = class {
             ellipseMode(RADIUS);
             ellipse(this.position.x * 55 - 30, this.position.y * 55 - 30, 25, 25);
         }
-        Othello.allPieces.push(this);
+        if (boolean) {
+            Othello.allPieces.push(this);
+        }
     }
 }
 
