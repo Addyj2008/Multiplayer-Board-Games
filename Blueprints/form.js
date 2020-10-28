@@ -477,10 +477,12 @@ class Form {
         this.ls = [];
         database.ref('Players').once('value').then((val)=>{
             for (let loop1 in val.val()) {
-                this.ls.push({
-                    'name' : loop1,
-                    'score' : val.val()[loop1].Score[type]
-                });
+                if (typeof val.val()[loop1].Score[type] === "number") {
+                    this.ls.push({
+                        'name' : loop1,
+                        'score' : val.val()[loop1].Score[type]
+                    });
+                }
             }
         });
         wait[1] = true;
