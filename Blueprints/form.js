@@ -378,6 +378,9 @@ class Form {
                             for (let loop1 = 0; loop1 < val.val().allPieces.length - Othello.allPieces.length; loop1++) {
                                 Othello.allPieces.push(new OthelloCF.Piece(val.val().allPieces[Othello.allPieces.length + loop1].position.x, val.val().allPieces[Othello.allPieces.length + loop1].position.y, {'colour' : val.val().allPieces[Othello.allPieces.length + loop1].orignalColour}, false));
                             }
+                            for (let loop1 = 0; loop1 < val.val().winners.length - Othello.winners.length; loop1++) {
+                                Othello.winners.push(new OthelloCF.Player(0, 0, "a", false));
+                            }
                             for (let loop0 in val.val()) {
                                 if (typeof val.val()[loop0] == "object") {
                                     for (let loop1 in val.val()[loop0]) {

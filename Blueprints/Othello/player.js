@@ -11,7 +11,7 @@ let OthelloCF = {};
 let OthelloR = {};
 
 OthelloCF.Player = class {
-    constructor(r, g, b, name) {
+    constructor(r, g, b, name, boolean = true) {
         this.name = name;
         this.colour = {'r' : r, 'g' : g, 'b' : b};
         this.turn = Othello.allPlayers.length;
@@ -36,7 +36,9 @@ OthelloCF.Player = class {
             fill(this.colour.r, this.colour.g, this.colour.b);
             text("Score of " + this.name + " = " + this.getScore(), x, y);
         }
-        Othello.allPlayers.push(this);
+        if (boolean) {
+            Othello.allPlayers.push(this);
+        }
     }
 }
 
