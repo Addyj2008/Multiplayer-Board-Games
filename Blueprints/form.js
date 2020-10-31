@@ -294,14 +294,18 @@ class Form {
                         }
                     }
                     
-                    OthelloCF.reset = function() {
-                        Othello.turn = 0;
-                        OthelloCF.revertToOrignal();
-                        Othello.allPieces = [];
-                        for (let loop1 = 0; loop1 < Othello.basePieces.length; loop1 += 1) {
-                            Othello.allPieces.push(Othello.basePieces[loop1]);
+                    OthelloCF.reset = () => {
+                        if (name = this.currentGameName) {
+                            Othello.turn = 0;
+                            OthelloCF.revertToOrignal();
+                            Othello.allPieces = [];
+                            for (let loop1 = 0; loop1 < Othello.basePieces.length; loop1 += 1) {
+                                Othello.allPieces.push(Othello.basePieces[loop1]);
+                            }
+                            Othello.winners = [];
+                            OthelloCF.update();
+                            database.ref('Games/Othello/' + this.currentGameName + '/Game/allPieces').remove();
                         }
-                        Othello.winners = [];
                     }
                     
                     OthelloCF.endGame = function() {
