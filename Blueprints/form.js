@@ -317,8 +317,8 @@ class Form {
                         for (let loop1 in Othello.allPlayers) {
                             database.ref('Players/' + Othello.allPlayers[loop1].name + '/Score').once('value').then((val) => {  
                                 database.ref('Players/' + Othello.allPlayers[loop1].name + '/Score').update({
-                                    'Total' : val.val().Total + (Othello.allPlayers[loop1].getScore() - 40)*1000/40,
-                                    'Othello' : val.val().Total + (Othello.allPlayers[loop1].getScore() - 40)*1000/40
+                                    'Total' : val.val().Total + (Othello.allPlayers[loop1].getScore() - 32)*1000/32,
+                                    'Othello' : val.val().Total + (Othello.allPlayers[loop1].getScore() - 32)*1000/32
                                 });
                             });
                         }
