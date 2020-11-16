@@ -7,7 +7,8 @@ class Form {
         this.signUp = createButton('Sign Up');
         this.signUp.position(100, 100);
         this.signUp.mousePressed(()=>{
-            this.hideAll()
+            this.hideAll();
+            music.play();
             this.back.show();
             this.checkUsername.show();
             this.enterUsername.show();
@@ -16,6 +17,7 @@ class Form {
         this.signIn.position(200, 100);
         this.signIn.mousePressed(()=>{
             this.hideAll();
+            music.play();
             this.back.show();
             this.enterPassword.show();
             this.enterUsername.show();

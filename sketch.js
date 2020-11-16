@@ -1,4 +1,8 @@
-let form, database, name, turn, score, state, wait = [], oldName, topper = [];
+let form, database, name, turn, score, state, wait = [], oldName, topper = [], music;
+
+function preload () {
+    music = loadSound('Music/music.mp3');
+}
 
 function setup () {
     createCanvas(5000, 5000)
@@ -8,6 +12,9 @@ function setup () {
 
 function draw() {
     background(0, 255, 255);
+    if (!music.isPlaying() && music.isLoaded()) {
+        music.play();
+    }
     if (state === "Home" && score !== undefined && score !== null) {
         text("Score = " + score.Total, 100, 200);
     } else if (state === "Game Screen" && score !== undefined && score !== null) {
