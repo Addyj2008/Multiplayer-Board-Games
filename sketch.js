@@ -1,7 +1,7 @@
 let form, database, name, turn, score, state, wait = [], oldName, topper = [], music;
 
 function preload () {
-    music = loadSound('Music/music.mp3');
+    music = loadSound('Music/Music.mp3');
 }
 
 function setup () {
