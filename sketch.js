@@ -5,7 +5,7 @@ function preload () {
 }
 
 function setup () {
-    createCanvas(5000, 5000)
+    createCanvas(window.innerWidth, window.innerHeight)
     database = firebase.database();
     form = new Form();
 }
